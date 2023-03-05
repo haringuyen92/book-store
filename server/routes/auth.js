@@ -8,6 +8,9 @@ router.post("/register", async (req,res) => {
     try{
         const {username, password} = req.body
 
+        if(!username) return res.json({status: "bad", msg: "username require"})
+        if(!password) return res.json({status: "bad", msg: "password require"})
+
         if(username.trim().length < 5) return res.json({status: "bad", msg: "username min length 5"})
         if(username.trim().length > 20) return res.json({status: "bad", msg: "username max length 20"})
         if(password.trim().length > 20) return res.json({status: "bad", msg: "password max length 20"})
@@ -21,6 +24,7 @@ router.post("/register", async (req,res) => {
             username: username.trim().toLowerCase(),
             password: password.trim().toLowerCase()
         });
+        console.log(newUser);
         const token = await jwt.sign(newUser, "tokensecret")
 
         return res.json({
@@ -30,7 +34,7 @@ router.post("/register", async (req,res) => {
             token
         })
     }catch(error){
-        console.log(error.message)
+        return res.json({status: "bad request", msg: error.message})
     }
 })
 
